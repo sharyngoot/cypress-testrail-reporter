@@ -5,7 +5,7 @@ import { TestRailOptions, TestRailResult } from './testrail.interface';
 export class TestRail {
   private base: String;
   private runId: Number;
-  private includeAll: Boolean = true;
+  private includeAll: Boolean = false;
   private caseIds: Number[] = [];
 
   constructor(private options: TestRailOptions) {
@@ -13,13 +13,9 @@ export class TestRail {
   }
 
   public getCases () {
-    let url = `${this.base}/get_cases/${this.options.projectId}&suite_id=${this.options.suiteId}`
-    if (this.options.groupId) {
-      url += `&section_id=${this.options.groupId}`
-    }
-    if (this.options.filter) {
-      url += `&filter=${this.options.filter}`
-    }
+
+    let url =  `${this.base}/get_tests/${this.options.runId}`
+
     return axios({
       method:'get',
       url: url,
@@ -29,7 +25,7 @@ export class TestRail {
           password: this.options.password
       } 
     })
-      .then(response => response.data.map(item =>item.id))
+      .then(response => response.data.map(item =>item.case_id))
       .catch(error => console.error(error));
   }
 
